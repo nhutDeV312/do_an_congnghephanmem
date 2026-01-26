@@ -49,4 +49,33 @@ void Teacher::showClassMenu(Database& db, string classID) {
             case 3: viewReport(db, classID); break;
         }
     } while (choice != 0);
+}// --- GIAO DIEN TAO BUOI HOC MOI ---
+void Teacher::createSession(Database& db, string classID) {
+    string d, s, e, p;
+    cout << "\n-------------------------------------------------------\n";
+    cout << "   TAO BUOI DIEM DANH MOI (Lop " << classID << ")\n";
+    cout << "-------------------------------------------------------\n";
+    
+    cout << "  Buoc 1: Nhap Ngay hoc (dd/mm/yyyy) : "; cin >> d;
+    cout << "  Buoc 2: Nhap Gio bat dau (HH:MM)   : "; cin >> s;
+    cout << "  Buoc 3: Nhap Gio ket thuc (HH:MM)  : "; cin >> e;
+    
+    if (e <= s) { 
+        cout << "\n>>> LOI: Gio ket thuc phai lon hon gio bat dau!\n"; 
+        return; 
+    }
+
+    for(int i=0; i<db.sessions.size(); i++) {
+        if(db.sessions[i].getClassID() == classID && db.sessions[i].getDate() == d && db.sessions[i].getStartTime() == s) {
+            cout << "\n>>> LOI: Buoi hoc nay da ton tai roi (Trung lich)!\n"; return;
+        }
+    }
+
+    cout << "  Buoc 4: Dat Mat khau diem danh     : "; cin >> p;
+    
+    string sid = "SES" + to_string(time(0));
+    db.sessions.push_back(Session(sid, classID, teacherID, d, s, e, true, p));
+    db.saveSessions();
+    
+    cout << "\n>>> THANH CONG! Ma session: " << sid << " | Trang thai: DANG MO\n";
 }
