@@ -1,0 +1,7 @@
+U001|gv01|123|Nguyen Van Hung|M|0901111111|teacher
+U002|gv02|123|Tran Thi Mai|F|0902222222|teacher
+U003|sv01|123|Huynh Quoc Anh Nhut|M|0357047507|student
+U004|sv02|123|Pham Thi Lan|F|0904444444|student
+U005|sv03|123|Hoang Van Minh|M|0905555555|student
+U006|sv04|123|Vu Thi Hoa|F|0906666666|student
+U007|sv05|123|Dang Van Phuc|M|0907777777|student

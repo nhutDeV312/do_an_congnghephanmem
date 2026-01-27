@@ -1,0 +1,2 @@
+T01|U001|Cong Nghe Thong Tin|Tien si
+T02|U002|Toan Tin|Thac si
