@@ -49,7 +49,9 @@ void Teacher::showClassMenu(Database& db, string classID) {
             case 3: viewReport(db, classID); break;
         }
     } while (choice != 0);
-}// --- GIAO DIEN TAO BUOI HOC MOI ---
+}
+
+// --- GIAO DIEN TAO BUOI HOC MOI ---
 void Teacher::createSession(Database& db, string classID) {
     string d, s, e, p;
     cout << "\n-------------------------------------------------------\n";
@@ -79,8 +81,8 @@ void Teacher::createSession(Database& db, string classID) {
     
     cout << "\n>>> THANH CONG! Ma session: " << sid << " | Trang thai: DANG MO\n";
 }
-// chuc nang edit va viewreport
 
+// --- GIAO DIEN SUA BUOI HOC  ---
 void Teacher::editSession(Database& db, string classID) {
     cout << "\n--- DANH SACH CAC BUOI DIEM DANH ---\n";
     cout << left << setw(6) << "STT" << setw(15) << "NGAY" << setw(15) << "THOI GIAN" << setw(12) << "TRANG THAI" << endl;
@@ -144,37 +146,42 @@ void Teacher::editSession(Database& db, string classID) {
         else if(act==2) {
             cout << "\n--- CAP NHAT TRANG THAI SINH VIEN ---\n";
             
-            // HIỂN THỊ DANH SÁCH SINH VIÊN (ĐÃ SỬA LỖI) 
-            cout << "Danh sach sinh vien trong buoi nay:\n";
-            cout << left << setw(15) << "MSSV" << setw(15) << "TRANG THAI" << endl;
-            cout << "------------------------------\n";
+            // --- KIEM TRA DANH SACH RONG ---
             if (bufAtt.empty()) {
-                cout << "(Chua co sinh vien nao)\n";
-            } else {
-                // Sửa lỗi: Dùng vòng lặp chỉ số (int i) thay vì const auto& để tránh lỗi getter không const
+                cout << "Danh sach sinh vien hien tai: (Trong)\n";
+                cout << "------------------------------\n";
+                cout << ">>> THONG BAO: Chua co sinh vien nao diem danh trong buoi nay!\n";
+                cout << "    Ban khong the sua trang thai khi danh sach rong.\n";
+                cout << "    Vui long doi sinh vien diem danh hoac quay lai sau.\n";
+                
+            } 
+            else {
+                // Neu co du lieu thi hien thi va cho sua
+                cout << "Danh sach sinh vien trong buoi nay:\n";
+                cout << left << setw(15) << "MSSV" << setw(15) << "TRANG THAI" << endl;
+                cout << "------------------------------\n";
                 for (int i = 0; i < bufAtt.size(); i++) {
                     cout << left << setw(15) << bufAtt[i].getStudentID() 
                          << setw(15) << bufAtt[i].getStatus() << endl;
                 }
-            }
-            cout << "------------------------------\n";
-            
+                cout << "------------------------------\n";
 
-            string sid; int stat; 
-            cout << "  - Nhap MSSV can sua (hoac them moi): "; cin >> sid; 
-            cout << "  - Chon trang thai (1.CoMat | 2.Vang | 3.Tre): "; cin >> stat;
-            string ss = (stat==1?"Co Mat":(stat==2?"Vang":"Tre"));
-            
-            bool f=false;
-            for(int i=0; i<bufAtt.size(); i++) {
-                if(bufAtt[i].getStudentID()==sid) { 
-                    bufAtt[i].setStatus(ss); f=true; 
-                    cout << ">>> Da cap nhat SV " << sid << " thanh: " << ss << endl;
+                string sid; int stat; 
+                cout << "  - Nhap MSSV can sua: "; cin >> sid; 
+                cout << "  - Chon trang thai (1.CoMat | 2.Vang | 3.Tre): "; cin >> stat;
+                string ss = (stat==1?"Co Mat":(stat==2?"Vang":"Tre"));
+                
+                bool f=false;
+                for(int i=0; i<bufAtt.size(); i++) {
+                    if(bufAtt[i].getStudentID()==sid) { 
+                        bufAtt[i].setStatus(ss); f=true; 
+                        cout << ">>> Da cap nhat SV " << sid << " thanh: " << ss << endl;
+                    }
                 }
-            }
-            if(!f) { 
-                bufAtt.push_back(Attendance(sid, s.getSessionID(), ss, "Manual")); 
-                cout << ">>> Da them moi SV " << sid << " vao danh sach.\n";
+                if(!f) { 
+                    bufAtt.push_back(Attendance(sid, s.getSessionID(), ss, "Manual")); 
+                    cout << ">>> Da them moi SV " << sid << " vao danh sach.\n";
+                }
             }
         } 
         else if(act==3) {
@@ -186,7 +193,7 @@ void Teacher::editSession(Database& db, string classID) {
             
             db.attendances = newAtt;
             db.saveSessions(); db.saveAttendance();
-            cout << "\n DA LUU THANH CONG VAO HE THONG!\n"; break;
+            cout << "\n>>> DA LUU THANH CONG VAO HE THONG!\n"; break;
         } 
         else if(act==0) break;
     }
@@ -215,6 +222,7 @@ void Teacher::viewReport(Database& db, string classID) {
     cout << "============================================\n";
     cout << left << setw(15) << "MSSV" << setw(15) << "TRANG THAI" << endl;
     cout << "------------------------------\n";
+    
     int cnt=0;
     for(int i=0; i<db.attendances.size(); i++) {
         if(db.attendances[i].getSessionID() == sid) {
