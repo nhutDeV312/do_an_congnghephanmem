@@ -144,7 +144,7 @@ bool User::login(Database& db, User& curUser, string& curRID) {
 
 void User::forgotPassword(Database& db) {
     cout << "\n--- KHOI PHUC MAT KHAU ---\n";
-    cout << "Nhap ID (Username/MSSV/MaGV): "; string id; cin >> id; 
+    cout << "Nhap ID (MSSV/MaGV): "; string id; cin >> id; 
     cout << "Nhap So Dien Thoai da dang ky : "; string ph; cin >> ph;
     
     string uid = db.getUserIDByRoleID(id);
