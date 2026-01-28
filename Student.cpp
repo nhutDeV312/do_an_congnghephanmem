@@ -1,11 +1,15 @@
+
 #include "Student.h"
 #include "Database.h"
+#include "Teacher.h" 
 #include <iostream>
 #include <iomanip>
+#include <string>
+#include <vector>
 
 using namespace std;
 
-//Chức năng hỗ trợ
+//Chuc nang ho tro
 
 string findLecturerName(Database& db, string classID) {
     string teacherID = "";
@@ -15,7 +19,7 @@ string findLecturerName(Database& db, string classID) {
         }
     }
     if (teacherID == "") {
-        return "---"; 
+          return "---"; 
     }
     string uid = db.getUserIDByRoleID(teacherID);
     for (int i = 0; i < db.users.size(); i++) {
@@ -31,7 +35,7 @@ string getSubjectName(Database& db, string classID) {
     return classID;
 }
 
-// Use Case
+// Chon class
 string studentSelectClass(Database& db) {
     cout << "\n";
     cout << "=========================================================================================\n";
@@ -76,60 +80,155 @@ string studentSelectClass(Database& db) {
     return "";
 }
 
+
 Student::Student(string sid, string uid, string m) : studentID(sid), major(m) { userID=uid; }
 
 void Student::showMenu(Database& db, User user) {
     int choice;
     do {
-        cout << "\n============================================\n";
-        cout << "      DASHBOARD SINH VIEN (" << studentID << ")\n";
+        cout << "\n";
         cout << "============================================\n";
-        cout << "  [1]. VAO LOP HOC (Chon lop)\n  [2]. XEM THONG TIN CA NHAN\n  [0]. DANG XUAT\n>> Chon: "; cin >> choice;
-        if (choice == 1) { string cid = promptSelectClass(db); if (cid != "") showClassMenu(db, cid); }
-        else if (choice == 2) viewPersonalInfo(db, user, studentID);
+        cout << "      DASHBOARD SINH VIEN (" << user.getFullName() << ")\n";
+        cout << "============================================\n";
+        cout << "  [1]. XEM DANH SACH MON HOC (View Courses)\n";
+        cout << "  [2]. XEM THONG TIN CA NHAN (Profile)\n";
+        cout << "  [0]. DANG XUAT (Logout)\n";
+        cout << "============================================\n";
+        cout << ">> Nhap lua chon: "; 
+        cin >> choice;
+        
+        if (choice == 1) {
+            string classID = studentSelectClass(db);
+            if (classID != "") showClassMenu(db, classID);
+        } else if (choice == 2) {
+            viewPersonalInfo(db, user, studentID);
+        }
     } while (choice != 0);
 }
 
 void Student::showClassMenu(Database& db, string classID) {
     int choice;
     do {
-        cout << "\n--- LOP: " << classID << " ---\n  [1]. Diem danh\n  [2]. Lich su\n  [0]. Quay lai\n>> Chon: "; cin >> choice;
-        switch(choice) { case 1: takeAttendance(db, classID); break; case 2: viewHistory(db, classID); break; }
+        cout << "\n";
+        cout << "=== THAO TAC MON HOC: " << classID << " ===\n";
+        cout << "  [1]. DIEM DANH (Take Attendance)\n";
+        cout << "  [2]. XEM LICH SU (View History)\n";
+        cout << "  [0]. Quay lai\n";
+        cout << ">> Lua chon: "; cin >> choice;
+        switch(choice) {
+            case 1: takeAttendance(db, classID); break;
+            case 2: viewHistory(db, classID); break;
+        }
     } while (choice != 0);
 }
 
+//  Diem danh
 void Student::takeAttendance(Database& db, string classID) {
     cout << "\n--- CAC BUOI HOC DANG MO ---\n";
-    cout << left << setw(15) << "SESSION ID" << setw(15) << "NGAY" << endl;
-    cout << "------------------------------\n";
+    cout << left << setw(15) << "SESSION ID" << setw(15) << "NGAY" << setw(20) << "TRANG THAI" << endl;
+    cout << "--------------------------------------------------\n";
+    
     bool found = false;
-    for (int i = 0; i < db.sessions.size(); i++) 
+    for (int i = 0; i < db.sessions.size(); i++) {
         if (db.sessions[i].getIsOpen() && db.sessions[i].getClassID() == classID) {
-            cout << left << setw(15) << db.sessions[i].getSessionID() << setw(15) << db.sessions[i].getDate() << endl; found = true;
+            cout << left << setw(15) << db.sessions[i].getSessionID() 
+                 << setw(15) << db.sessions[i].getDate()
+                 << setw(20) << "DANG MO (OPEN)" << endl;
+            found = true;
         }
-    if (!found) { cout << "(Trong)\n"; return; }
+    }
+    if (!found) { cout << "   (Hien khong co buoi hoc nao dang mo)\n"; return; }
 
-    string sID, pass; cout << "\n>> Nhap SessionID: "; cin >> sID;
-    int idx = -1; for(int i=0; i<db.sessions.size(); i++) if(db.sessions[i].getSessionID() == sID) idx = i;
-    if(idx == -1 || !db.sessions[idx].getIsOpen() || db.sessions[idx].getClassID() != classID) { cout << "Loi ID/Lop.\n"; return; }
+    string sID, pass; 
+    cout << "\n>> Nhap SessionID de diem danh: "; cin >> sID;
+    
+    int idx = -1;
+    for(int i=0; i<db.sessions.size(); i++) if(db.sessions[i].getSessionID() == sID) idx = i;
+    
+    if(idx == -1) { cout << ">>> LOI: Khong tim thay SessionID nay.\n"; return; }
 
-    for(int i=0; i<db.attendances.size(); i++) if(db.attendances[i].getSessionID() == sID && db.attendances[i].getStudentID() == studentID) { cout << "Da diem danh roi.\n"; return; }
+    Session s = db.sessions[idx];
+    if(s.getClassID() != classID) { cout << ">>> LOI: Session nay khong thuoc lop ban dang chon.\n"; return; }
+    if(!s.getIsOpen()) { cout << ">>> LOI: Buoi hoc da DONG, khong the diem danh.\n"; return; }
 
-    cout << ">> Mat khau: "; cin >> pass;
-    if (pass == db.sessions[idx].getPassword()) {
-        db.attendances.push_back(Attendance(studentID, sID, "Co Mat", getCurrentTime())); db.saveAttendance(); cout << "Thanh cong!\n";
-    } else cout << "Sai mat khau.\n";
+    // Hien thi chi tiet phien
+    string lecturerName = findLecturerName(db, classID);
+    string subjectName = getSubjectName(db, classID);
+    cout << "\n--- THONG TIN BUOI DIEM DANH ---\n";
+    cout << " Mon hoc    : " << subjectName << "\n";
+    cout << " Giang vien : " << lecturerName << "\n";
+    cout << " Thoi gian  : " << s.getDate() << " (" << s.getStartTime() << " - " << s.getEndTime() << ")\n";
+    cout << "--------------------------------\n";
+
+    for(int i=0; i<db.attendances.size(); i++) 
+        if(db.attendances[i].getSessionID() == sID && db.attendances[i].getStudentID() == studentID) {
+            cout << ">>> BAN DA DIEM DANH ROI! (Trang thai: " << db.attendances[i].getStatus() << ")\n"; return; 
+        }
+
+    cout << ">> Nhap Mat khau (" << s.getPassword().length() << " ky tu): "; cin >> pass;
+    
+    if (pass == s.getPassword()) {
+        db.attendances.push_back(Attendance(studentID, sID, "Co Mat", getCurrentTime()));
+        db.saveAttendance();
+        cout << "\n>>> DIEM DANH THANH CONG! (Attendance Successful)\n";
+        cout << ">>> Thoi gian ghi nhan: " << getCurrentTime() << "\n";
+    } else cout << "\n>>> SAI MAT KHAU! Vui long thu lai.\n";
 }
 
 void Student::viewHistory(Database& db, string classID) {
-    cout << "\n--- LICH SU ---\n";
-    cout << left << setw(15) << "SESSION" << setw(15) << "TRANG THAI" << setw(15) << "GIO" << endl;
-    for (int i = 0; i < db.attendances.size(); i++) {
-        if (db.attendances[i].getStudentID() == studentID) {
-            string sClass = "";
-            for(int j=0; j<db.sessions.size(); j++) if(db.sessions[j].getSessionID() == db.attendances[i].getSessionID()) sClass = db.sessions[j].getClassID();
-            if (sClass == classID) cout << left << setw(15) << db.attendances[i].getSessionID() << setw(15) << db.attendances[i].getStatus() << setw(15) << db.attendances[i].getCheckinTime() << endl;
+    cout << "\n";
+    cout << "=============================================\n";
+    cout << "       LICH SU DIEM DANH (HISTORY)           \n";
+    cout << "=============================================\n";
+    cout << left << setw(15) << "SESSION ID" << setw(15) << "TRANG THAI" << setw(15) << "GIO CHECK-IN" << endl;
+    cout << "---------------------------------------------\n";
+    
+    int totalSessions = 0;
+    int presentCount = 0;
+    int absentCount = 0;
+
+    // Dem tong so buoi hoc cua lop 
+    for(int i=0; i<db.sessions.size(); i++) {
+        if(db.sessions[i].getClassID() == classID) {
+            totalSessions++;
+            // Kiem tra trang thai cua sinh vien trong buoi hoc
+            bool isPresent = false;
+            string status = "Vang"; // Mac dinh la vang
+            string time = "---";
+
+            for(int j=0; j<db.attendances.size(); j++) {
+                if(db.attendances[j].getSessionID() == db.sessions[i].getSessionID() && 
+                   db.attendances[j].getStudentID() == studentID) {
+                    status = db.attendances[j].getStatus();
+                    time = db.attendances[j].getCheckinTime();
+                    isPresent = true;
+                    break;
+                }
+            }
+
+            if(isPresent) presentCount++;
+            else absentCount++;
+
+            cout << left << setw(15) << db.sessions[i].getSessionID() 
+                 << setw(15) << status 
+                 << setw(15) << time << endl;
         }
     }
-    cout << "Nhan Enter..."; string d; getline(cin, d); getline(cin, d);
+    
+    if (totalSessions == 0) {
+        cout << "   (Chua co du lieu buoi hoc nao)\n";
+    } else {
+        cout << "---------------------------------------------\n";
+        cout << " TONG KET:\n";
+        cout << " - Tong so buoi : " << totalSessions << "\n";
+        cout << " - Co mat       : " << presentCount << "\n";
+        cout << " - Vang         : " << absentCount << "\n";
+        
+        float rate = (float)presentCount / totalSessions * 100;
+        cout << " => TY LE DIEM DANH: " << fixed << setprecision(1) << rate << "%\n";
+    }
+    cout << "=============================================\n";
+    
+    cout << "Nhan Enter de tiep tuc..."; 
+    cin.ignore(1000, '\n'); string d; getline(cin, d);
 }
