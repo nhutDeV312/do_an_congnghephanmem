@@ -1,7 +1,7 @@
-U001|gv01|123|Nguyen Van Hung|M|0901111111|teacher
-U002|gv02|123|Tran Thi Mai|F|0902222222|teacher
-U003|sv01|123|Huynh Quoc Anh Nhut|M|0357047507|student
-U004|sv02|123|Pham Thi Lan|F|0904444444|student
-U005|sv03|123|Hoang Van Minh|M|0905555555|student
-U006|sv04|123|Vu Thi Hoa|F|0906666666|student
-U007|sv05|123|Dang Van Phuc|M|0907777777|student
+U001|gv01|123|Nguyen Van Hung|1980-05-10|M|0901111111|teacher
+U002|gv02|123|Tran Thi Mai|1985-08-20|F|0902222222|teacher
+U003|sv01|123|Le Van Tam|2003-01-15|M|0903333333|student
+U004|sv02|123|Pham Thi Lan|2003-06-22|F|0904444444|student
+U005|sv03|123|Hoang Van Minh|2003-11-05|M|0905555555|student
+U006|sv04|123|Vu Thi Hoa|2003-03-30|F|0906666666|student
+U007|sv05|123|Dang Van Phuc|2003-09-12|M|0907777777|student
