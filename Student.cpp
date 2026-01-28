@@ -5,6 +5,27 @@
 
 using namespace std;
 
+//Chức năng hỗ trợ
+
+string findLecturerName(Database& db, string classID) {
+    string teacherID = "";
+    for (int i = 0; i < db.sessions.size(); i++) {
+        if (db.sessions[i].getClassID() == classID) {
+            teacherID = db.sessions[i].getTeacherID(); break;
+        }
+    }
+    if (teacherID == "") {
+        return "---"; 
+    }
+    string uid = db.getUserIDByRoleID(teacherID);
+    for (int i = 0; i < db.users.size(); i++) {
+        if (db.users[i].getUserID() == uid) return db.users[i].getFullName();
+    }
+    return "Unknown";
+}
+
+
+
 Student::Student(string sid, string uid, string m) : studentID(sid), major(m) { userID=uid; }
 
 void Student::showMenu(Database& db, User user) {
