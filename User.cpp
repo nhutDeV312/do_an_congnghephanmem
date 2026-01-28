@@ -9,7 +9,7 @@
 
 using namespace std;
 
-// Update Constructor: Them dob
+//Update Constructor: Them dob
 User::User(string uid, string uname, string pass, string fname, string d, string gen, string ph, string r) {
     userID=uid; username=uname; password=pass; fullName=fname; dob=d; gender=gen; phone=ph; role=r;
 }
@@ -22,8 +22,8 @@ string User::promptSelectClass(Database& db) {
     cout << "\n===============================================================\n";
     cout << "                  DANH SACH LOP HOC (CLASSES)                  \n";
     cout << "===============================================================\n";
-    if (db.classes.empty()) { cout << "   (Trong)\n"; return ""; }
-    
+    if (db.classes.empty()) 
+    { cout << "   (Trong)\n"; return ""; }
     cout << left << setw(6) << " STT" << left << setw(12) << "MA LOP" << left << setw(30) << "TEN MON HOC" << left << setw(10) << "PHONG" << endl;
     cout << "---------------------------------------------------------------\n";
     for (int i = 0; i < db.classes.size(); i++) {
@@ -39,7 +39,7 @@ string User::promptSelectClass(Database& db) {
     return "";
 }
 
-// --- 4. Use Case: View Personal Info (Chuan hoa theo yeu cau) ---
+//View Personal Info (Updated Loop)
 void User::viewPersonalInfo(Database& db, User user, string roleID) {
     cout << "\n";
     cout << "========================================================================\n";
@@ -49,11 +49,12 @@ void User::viewPersonalInfo(Database& db, User user, string roleID) {
     string genderStr = (user.getGender() == "M" ? "Nam" : "Nu");
     
     if (user.getRole() == "teacher") {
-        // --- GIANG VIEN: ID, Name, DOB, Gender, Phone, Degree ---
+        //GIANG VIEN: ID, Name, DOB, Gender, Phone, Degree
         string degree = "---";
-        for (const auto& t : db.teachers) {
-            if (t.getTeacherID() == roleID) {
-                degree = t.getDegree();
+        //Su dung vong lap for chi so don gian thay vi auto
+        for (int i = 0; i < db.teachers.size(); i++) {
+            if (db.teachers[i].getTeacherID() == roleID) {
+                degree = db.teachers[i].getDegree();
                 break;
             }
         }
@@ -66,11 +67,11 @@ void User::viewPersonalInfo(Database& db, User user, string roleID) {
         cout << left << setw(30) << " Hoc vi (Degree):" << degree << endl;
 
     } else {
-        // --- SINH VIEN: ID, Name, DOB, Gender, Major, Phone ---
+        //SINH VIEN: ID, Name, DOB, Gender, Major, Phone
         string major = "---";
-        for (const auto& s : db.students) {
-            if (s.getStudentID() == roleID) {
-                major = s.getMajor();
+        for (int i = 0; i < db.students.size(); i++) {
+            if (db.students[i].getStudentID() == roleID) {
+                major = db.students[i].getMajor();
                 break;
             }
         }
