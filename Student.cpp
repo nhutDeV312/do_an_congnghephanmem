@@ -43,24 +43,22 @@ string studentSelectClass(Database& db) {
         return "";
     }
 
-    // Header bang: Can chinh lai do rong cot cho hop ly (Tong ~100 ky tu)
+    // Header bang: Da bo cot GIANG VIEN va doi MA MH thanh MA LOP
     cout << left << setw(6)  << "STT" 
-         << left << setw(10) << "MA MH" 
-         << left << setw(35) << "TEN MON HOC"      // Tang len 35 de ten dai khong bi lech
-         << left << setw(12) << "HOC KY"
-         << left << setw(10) << "PHONG"
-         << left << setw(25) << "GIANG VIEN" << endl; // Tang len 25 cho ten GV
+         << left << setw(15) << "MA LOP" 
+         << left << setw(35) << "TEN MON HOC"      
+         << left << setw(15) << "HOC KY"
+         << left << setw(10) << "PHONG" << endl;
     cout << "----------------------------------------------------------------------------------------------------\n";
 
     for (int i = 0; i < db.classes.size(); i++) {
-        string lecturer = findLecturerName(db, db.classes[i].getClassID());
+        // string lecturer = findLecturerName(db, db.classes[i].getClassID()); // Khong can hien thi giang vien nua
         
         cout << left << setw(6)  << i + 1 
-             << left << setw(10) << db.classes[i].getClassID() 
+             << left << setw(15) << db.classes[i].getClassID() 
              << left << setw(35) << db.classes[i].getSubjectID() 
-             << left << setw(12) << "HK1-2024" // Placeholder
-             << left << setw(10) << db.classes[i].getRoom()
-             << left << setw(25) << lecturer << endl;
+             << left << setw(15) << "HK1-2024" // Placeholder
+             << left << setw(10) << db.classes[i].getRoom() << endl;
     }
     cout << "====================================================================================================\n";
     cout << " [0]. Quay lai Dashboard\n";
