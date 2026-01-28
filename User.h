@@ -1,5 +1,6 @@
 #ifndef USER_H
 #define USER_H
+
 #include <string>
 #include <iostream>
 #include <ctime>
@@ -10,23 +11,25 @@ class Database; // Forward declaration
 
 class User {
 protected:
-    string userID, username, password, fullName, gender, phone, role;
+    // Them thuoc tinh dob (Day of Birth)
+    string userID, username, password, fullName, dob, gender, phone, role;
 
 public:
     User() {}
-    User(string uid, string uname, string pass, string fname, string gen, string ph, string r);
-    
-    // --- GETTERS (Cần thiết để Database lưu file) ---
+    // Update Constructor nhan them dob
+    User(string uid, string uname, string pass, string fname, string d, string gen, string ph, string r);
+
     string getUserID() { return userID; }
     string getUsername() { return username; }
-    string getPassword() { return password; } // <--- BẮT BUỘC PHẢI CÓ
+    string getPassword() { return password; }
     string getFullName() { return fullName; }
-    string getGender() { return gender; }     // <--- BẮT BUỘC PHẢI CÓ
+    string getDob() { return dob; } // Getter cho ngay sinh
+    string getGender() { return gender; }
     string getPhone() { return phone; }
     string getRole() { return role; }
     
-    bool checkPassword(string p) { return password == p; }
     void setPassword(string p) { password = p; }
+    bool checkPassword(string inputPass) { return password == inputPass; }
 
     // --- VIEW FUNCTIONS ---
     string getCurrentTime();
@@ -34,8 +37,9 @@ public:
     void viewPersonalInfo(Database& db, User user, string roleID);
 
     // --- SYSTEM FUNCTIONS ---
-    static void run(Database& db);;
+    static void run(Database& db);
     static bool login(Database& db, User& currentUser, string& currentRoleID);
     static void forgotPassword(Database& db);
 };
+
 #endif
