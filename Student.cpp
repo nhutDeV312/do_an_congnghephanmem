@@ -24,7 +24,57 @@ string findLecturerName(Database& db, string classID) {
     return "Unknown";
 }
 
+string getSubjectName(Database& db, string classID) {
+    for (int i = 0; i < db.classes.size(); i++) {
+        if (db.classes[i].getClassID() == classID) return db.classes[i].getSubjectID();
+    }
+    return classID;
+}
 
+// Use Case
+string studentSelectClass(Database& db) {
+    cout << "\n";
+    cout << "=========================================================================================\n";
+    cout << "                               DANH SACH MON HOC (COURSE LIST)                           \n";
+    cout << "=========================================================================================\n";
+    
+    if (db.classes.empty()) {
+        cout << "   (Hien khong co mon hoc nao)\n";
+        cout << "=========================================================================================\n";
+        return "";
+    }
+
+    cout << left << setw(6) << "STT" 
+         << left << setw(10) << "MA MH" 
+         << left << setw(30) << "TEN MON HOC" 
+         << left << setw(15) << "HOC KY"
+         << left << setw(10) << "PHONG"
+         << left << setw(20) << "GIANG VIEN" << endl;
+    cout << "-----------------------------------------------------------------------------------------\n";
+
+    for (int i = 0; i < db.classes.size(); i++) {
+        string lecturer = findLecturerName(db, db.classes[i].getClassID());
+        cout << left << setw(6) << i + 1 
+             << left << setw(10) << db.classes[i].getClassID() 
+             << left << setw(30) << db.classes[i].getSubjectID() 
+             << left << setw(15) << "HK1-2024" 
+             << left << setw(10) << db.classes[i].getRoom()
+             << left << setw(20) << lecturer << endl;
+    }
+    cout << "=========================================================================================\n";
+    cout << " [0]. Quay lai Dashboard\n";
+    cout << ">> Nhap STT mon hoc muon thao tac: ";
+    
+    int choice;
+    if (!(cin >> choice)) {
+        cin.clear(); cin.ignore(1000, '\n'); return "";
+    }
+
+    if (choice > 0 && choice <= db.classes.size()) {
+        return db.classes[choice - 1].getClassID();
+    }
+    return "";
+}
 
 Student::Student(string sid, string uid, string m) : studentID(sid), major(m) { userID=uid; }
 
