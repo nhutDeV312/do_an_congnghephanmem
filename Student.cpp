@@ -217,10 +217,7 @@ void Student::viewHistory(Database& db, string classID) {
         cout << " TONG KET:\n";
         cout << " - Tong so buoi : " << totalSessions << "\n";
         cout << " - Co mat       : " << presentCount << "\n";
-        cout << " - Vang         : " << absentCount << "\n";
-        
-        float rate = (float)presentCount / totalSessions * 100;
-        cout << " => TY LE DIEM DANH: " << fixed << setprecision(1) << rate << "%\n";
+        cout << " - Vang         : " << absentCount << "\n"; 
     }
     cout << "====================================================================\n";
     
