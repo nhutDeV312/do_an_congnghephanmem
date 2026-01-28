@@ -9,7 +9,7 @@
 
 using namespace std;
 
-//Update Constructor: Them dob
+// Update Constructor
 User::User(string uid, string uname, string pass, string fname, string d, string gen, string ph, string r) {
     userID=uid; username=uname; password=pass; fullName=fname; dob=d; gender=gen; phone=ph; role=r;
 }
@@ -22,8 +22,8 @@ string User::promptSelectClass(Database& db) {
     cout << "\n===============================================================\n";
     cout << "                  DANH SACH LOP HOC (CLASSES)                  \n";
     cout << "===============================================================\n";
-    if (db.classes.empty()) 
-    { cout << "   (Trong)\n"; return ""; }
+    if (db.classes.empty()) { cout << "   (Trong)\n"; return ""; }
+    
     cout << left << setw(6) << " STT" << left << setw(12) << "MA LOP" << left << setw(30) << "TEN MON HOC" << left << setw(10) << "PHONG" << endl;
     cout << "---------------------------------------------------------------\n";
     for (int i = 0; i < db.classes.size(); i++) {
@@ -39,7 +39,7 @@ string User::promptSelectClass(Database& db) {
     return "";
 }
 
-//View Personal Info (Updated Loop)
+// --- 4. Use Case: View Personal Info (DA SUA LOI HIEN THI SAI) ---
 void User::viewPersonalInfo(Database& db, User user, string roleID) {
     cout << "\n";
     cout << "========================================================================\n";
@@ -48,13 +48,19 @@ void User::viewPersonalInfo(Database& db, User user, string roleID) {
     
     string genderStr = (user.getGender() == "M" ? "Nam" : "Nu");
     
-    if (user.getRole() == "teacher") {
-        //GIANG VIEN: ID, Name, DOB, Gender, Phone, Degree
+    // --- FIX LOI QUAN TRONG: Xu ly ky tu \r de so sanh dung role ---
+    string cleanRole = user.getRole();
+    if (!cleanRole.empty() && cleanRole.back() == '\r') cleanRole.pop_back();
+
+    if (cleanRole == "teacher") {
+        // --- GIANG VIEN ---
         string degree = "---";
-        //Su dung vong lap for chi so don gian thay vi auto
+        string dept = "---";
+        
         for (int i = 0; i < db.teachers.size(); i++) {
             if (db.teachers[i].getTeacherID() == roleID) {
                 degree = db.teachers[i].getDegree();
+                dept = db.teachers[i].getDepartment();
                 break;
             }
         }
@@ -64,10 +70,12 @@ void User::viewPersonalInfo(Database& db, User user, string roleID) {
         cout << left << setw(30) << " Ngay sinh (Date of Birth):" << user.getDob() << endl;
         cout << left << setw(30) << " Gioi tinh (Gender):" << genderStr << endl;
         cout << left << setw(30) << " So dien thoai (Phone):" << user.getPhone() << endl;
-        cout << left << setw(30) << " Hoc vi (Degree):" << degree << endl;
-
-    } else {
-        //SINH VIEN: ID, Name, DOB, Gender, Major, Phone
+        cout << "------------------------------------------------------------------------\n";
+        cout << left << setw(30) << " Hoc vi (Degree):" << degree << endl;     // Da bo sung
+        cout << left << setw(30) << " Khoa (Department):" << dept << endl;
+    } 
+    else {
+        // --- SINH VIEN ---
         string major = "---";
         for (int i = 0; i < db.students.size(); i++) {
             if (db.students[i].getStudentID() == roleID) {
@@ -80,8 +88,9 @@ void User::viewPersonalInfo(Database& db, User user, string roleID) {
         cout << left << setw(30) << " Ho va Ten (Full Name):" << user.getFullName() << endl;
         cout << left << setw(30) << " Ngay sinh (Date of Birth):" << user.getDob() << endl;
         cout << left << setw(30) << " Gioi tinh (Gender):" << genderStr << endl;
-        cout << left << setw(30) << " Chuyen nganh (Major):" << major << endl;
         cout << left << setw(30) << " So dien thoai (Phone):" << user.getPhone() << endl;
+        cout << "------------------------------------------------------------------------\n";
+        cout << left << setw(30) << " Chuyen nganh (Major):" << major << endl;
     }
     
     cout << "========================================================================\n";
@@ -144,7 +153,7 @@ bool User::login(Database& db, User& curUser, string& curRID) {
 
 void User::forgotPassword(Database& db) {
     cout << "\n--- KHOI PHUC MAT KHAU ---\n";
-    cout << "Nhap ID (MSSV/MaGV): "; string id; cin >> id; 
+    cout << "Nhap ID (Username/MSSV/MaGV): "; string id; cin >> id; 
     cout << "Nhap So Dien Thoai da dang ky : "; string ph; cin >> ph;
     
     string uid = db.getUserIDByRoleID(id);
