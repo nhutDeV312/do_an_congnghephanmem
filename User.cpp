@@ -9,7 +9,6 @@
 
 using namespace std;
 
-// Update Constructor
 User::User(string uid, string uname, string pass, string fname, string d, string gen, string ph, string r) {
     userID=uid; username=uname; password=pass; fullName=fname; dob=d; gender=gen; phone=ph; role=r;
 }
@@ -39,7 +38,6 @@ string User::promptSelectClass(Database& db) {
     return "";
 }
 
-// --- 4. Use Case: View Personal Info (DA SUA LOI HIEN THI SAI) ---
 void User::viewPersonalInfo(Database& db, User user, string roleID) {
     cout << "\n";
     cout << "========================================================================\n";
@@ -48,12 +46,11 @@ void User::viewPersonalInfo(Database& db, User user, string roleID) {
     
     string genderStr = (user.getGender() == "M" ? "Nam" : "Nu");
     
-    // --- FIX LOI QUAN TRONG: Xu ly ky tu \r de so sanh dung role ---
     string cleanRole = user.getRole();
     if (!cleanRole.empty() && cleanRole.back() == '\r') cleanRole.pop_back();
 
     if (cleanRole == "teacher") {
-        // --- GIANG VIEN ---
+        // GIANG VIEN
         string degree = "---";
         string dept = "---";
         
@@ -75,7 +72,7 @@ void User::viewPersonalInfo(Database& db, User user, string roleID) {
         cout << left << setw(30) << " Khoa (Department):" << dept << endl;
     } 
     else {
-        // --- SINH VIEN ---
+        // SINH VIEN 
         string major = "---";
         for (int i = 0; i < db.students.size(); i++) {
             if (db.students[i].getStudentID() == roleID) {

@@ -51,7 +51,6 @@ void Teacher::showClassMenu(Database& db, string classID) {
     } while (choice != 0);
 }
 
-// --- GIAO DIEN TAO BUOI HOC MOI ---
 void Teacher::createSession(Database& db, string classID) {
     string d, s, e, p;
     cout << "\n-------------------------------------------------------\n";
@@ -82,7 +81,6 @@ void Teacher::createSession(Database& db, string classID) {
     cout << "\n>>> THANH CONG! Ma session: " << sid << " | Trang thai: DANG MO\n";
 }
 
-// --- GIAO DIEN SUA BUOI HOC  ---
 void Teacher::editSession(Database& db, string classID) {
     cout << "\n--- DANH SACH CAC BUOI DIEM DANH ---\n";
     cout << left << setw(6) << "STT" << setw(15) << "NGAY" << setw(15) << "THOI GIAN" << setw(12) << "TRANG THAI" << endl;
@@ -146,7 +144,6 @@ void Teacher::editSession(Database& db, string classID) {
         else if(act==2) {
             cout << "\n--- CAP NHAT TRANG THAI SINH VIEN ---\n";
             
-            // --- KIEM TRA DANH SACH RONG ---
             if (bufAtt.empty()) {
                 cout << "Danh sach sinh vien hien tai: (Trong)\n";
                 cout << "------------------------------\n";
@@ -156,7 +153,6 @@ void Teacher::editSession(Database& db, string classID) {
                 
             } 
             else {
-                // Neu co du lieu thi hien thi va cho sua
                 cout << "Danh sach sinh vien trong buoi nay:\n";
                 cout << left << setw(15) << "MSSV" << setw(15) << "TRANG THAI" << endl;
                 cout << "------------------------------\n";

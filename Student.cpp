@@ -8,9 +8,8 @@
 
 using namespace std;
 
-// --- Helper Functions (Local) ---
 
-// Ham tim ten giang vien (Dua vao session da tao)
+// Ham tim ten giang vien 
 string findLecturerName(Database& db, string classID) {
     string teacherID = "";
     // Tim xem ai da tao session cho lop nay
@@ -21,7 +20,7 @@ string findLecturerName(Database& db, string classID) {
         }
     }
     
-    if (teacherID == "") return "---"; // Chua co session nao -> Chua biet GV
+    if (teacherID == "") return "---";
 
     string uid = db.getUserIDByRoleID(teacherID);
     for (int i = 0; i < db.users.size(); i++) {
@@ -30,7 +29,6 @@ string findLecturerName(Database& db, string classID) {
     return "Unknown";
 }
 
-// 8. Use Case: View Course Info (DA CHINH SUA GIAO DIEN)
 string studentSelectClass(Database& db) {
     cout << "\n";
     cout << "====================================================================================================\n";
@@ -42,8 +40,6 @@ string studentSelectClass(Database& db) {
         cout << "====================================================================================================\n";
         return "";
     }
-
-    // Header bang: Da bo cot GIANG VIEN va doi MA MH thanh MA LOP
     cout << left << setw(6)  << "STT" 
          << left << setw(15) << "MA LOP" 
          << left << setw(35) << "TEN MON HOC"      
@@ -52,7 +48,7 @@ string studentSelectClass(Database& db) {
     cout << "----------------------------------------------------------------------------------------------------\n";
 
     for (int i = 0; i < db.classes.size(); i++) {
-        // string lecturer = findLecturerName(db, db.classes[i].getClassID()); // Khong can hien thi giang vien nua
+        // string lecturer = findLecturerName(db, db.classes[i].getClassID())
         
         cout << left << setw(6)  << i + 1 
              << left << setw(15) << db.classes[i].getClassID() 
@@ -65,7 +61,6 @@ string studentSelectClass(Database& db) {
     cout << ">> Nhap STT mon hoc muon thao tac: ";
     
     int choice;
-    // Fix loi nhap lieu
     if (!(cin >> choice)) {
         cin.clear(); cin.ignore(1000, '\n'); return "";
     }
@@ -75,8 +70,6 @@ string studentSelectClass(Database& db) {
     }
     return "";
 }
-
-// --- Implementation ---
 
 Student::Student(string sid, string uid, string m) : studentID(sid), major(m) { userID=uid; }
 
